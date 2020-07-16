@@ -2,6 +2,7 @@
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,10 @@ namespace FunctionApp1
     public class PlayerFunction
     {
         [FunctionName("playerSave")]
-        public async Task<PlayerEntity> PlayerSave([HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "player")] PlayerEntity playerEntity)
+        public async Task<PlayerEntity> PlayerSave(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "player")] PlayerEntity playerEntity,
+            [DocumentDB("Players")]
+            ILogger log)
         {
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(Environment.GetEnvironmentVariable("AzureWebJobsStorage"));
 

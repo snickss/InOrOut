@@ -21,7 +21,7 @@
 import Vue from 'vue'
 
 export default class App extends Vue {
-  title = "Vue Books";
+  title = "In or Out";
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <form v-on:submit.prevent="search">
+    <!-- <form v-on:submit.prevent="search">
       <div class="input-group">
         <md-field class="input-group-field">
           <label>Search 123</label>
@@ -8,8 +8,8 @@
         </md-field>
         <div class="input-group-button"><md-button class="md-raised" v-on:click="search"><md-icon>search</md-icon></md-button></div>
       </div>
-    </form>
-    <h2>Search Results</h2>
+    </form> -->
+    <h2>Groups</h2>
     <md-table>
       <md-table-row>
         <md-table-head>Title</md-table-head>
@@ -17,11 +17,11 @@
         <md-table-head>Pub. Year</md-table-head>
         <md-table-head>View</md-table-head>
       </md-table-row>
-      <md-table-row v-for="book in books" v-bind:key="book.key">
-        <md-table-cell>{{book.title}}</md-table-cell>
-        <md-table-cell>{{book.author_name && book.author_name.join(', ')}}</md-table-cell>
-        <md-table-cell md-numeric>{{book.first_publish_year}}</md-table-cell>
-        <md-table-cell><md-button v-on:click="viewDetails(book)"><md-icon>visibility</md-icon></md-button></md-table-cell>
+      <md-table-row v-for="group in groups" v-bind:key="group.key">
+        <md-table-cell>{{group.name}}</md-table-cell>
+        <md-table-cell>{{group.meetingDate}}</md-table-cell>
+        <md-table-cell md-numeric>{{group.location}}</md-table-cell>
+        <md-table-cell><md-button v-on:click="viewDetails(group)"><md-icon>visibility</md-icon></md-button></md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -34,20 +34,36 @@ import axios from 'axios';
 @Component
 export default class Search extends Vue {
   baseUrl = 'https://openlibrary.org';
-  books = [];
+  groups: any[];
   query = '';
 
-  async search() {
-    const response = await axios.get(this.baseUrl + `/search.json?title=${this.query}`);
-    this.books = await response.data.docs;
+  constructor() {
+    super();
+
+    this.groups = [
+      {
+        'name': 'Tuesday Tennis',
+        meetingDate: 'Tue 8PM',
+        location: 'STP'
+      }
+    ]
   }
 
-  viewDetails(book: any) {
+  created() {
+    
+  }
+
+  async search() {
+    const response = await axios.get(this.baseUrl + `/search.json?name=${this.query}`);
+    this.groups = await response.data.docs;
+  }
+
+  viewDetails(group: any) {
     this.$router.push({ path: 'details', query: {
-      title: book.title,
-      authors: book.author_name && book.author_name.join(', '),
-      year: book.first_publish_year,
-      cover_id: book.cover_edition_key
+      name: group.name,
+      authors: group.meetingDate && group.meetingDate.join(', '),
+      year: group.first_publish_year,
+      cover_id: group.cover_edition_key
     }});
   }
 }
